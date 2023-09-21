@@ -24,7 +24,7 @@ const login = async (email, password) => {
     email: user?.email,
     roles: user?.role,
   };
-  const token = await generateJWT(payload);
+  const token = generateJWT(payload);
   return { token };
 };
 
