@@ -4,7 +4,8 @@ const secureAPI = require("../../utils/secure");
 
 router.get("/", secureAPI(["admin"]), async (req, res, next) => {
   try {
-    const result = await Controller.list();
+    const { size, page } = req.query;
+    const result = await Controller.list(size, page);
     res.json({ data: result, msg: "success" });
   } catch (e) {
     next(e);

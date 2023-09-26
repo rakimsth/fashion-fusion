@@ -6,8 +6,57 @@ const create = (payload) => {
   return Model.create(payload);
 };
 
-const list = () => {
-  return Model.find();
+const list = async (size, page, search) => {
+  /*
+  Basic pagination Implementation
+  return Model.find().skip().limit();
+   */
+  const pageNum = parseInt(page) || 1;
+  const limit = parseInt(size) || 5;
+  const query = {};
+  const response = await Model.aggregate([
+    {
+      $match: query,
+    },
+    {
+      $sort: {
+        created_at: 1,
+      },
+    },
+    {
+      $facet: {
+        metadata: [
+          {
+            $count: "total",
+          },
+        ],
+        data: [
+          {
+            $skip: (pageNum - 1) * limit,
+          },
+          {
+            $limit: limit,
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        total: {
+          $arrayElemAt: ["$metadata.total", 0],
+        },
+      },
+    },
+    {
+      $project: {
+        data: 1,
+        total: 1,
+      },
+    },
+  ]).allowDiskUse(true);
+  const newData = response[0];
+  const { data, total } = newData;
+  return { data, total, limit, pageNum };
 };
 
 const getById = (id) => {
