@@ -13,7 +13,14 @@ const list = async (size, page, search) => {
    */
   const pageNum = parseInt(page) || 1;
   const limit = parseInt(size) || 5;
+  const { name, role } = search;
   const query = {};
+  if (name) {
+    query.name = new RegExp(name, "gi");
+  }
+  if (role) {
+    query.roles = [role];
+  }
   const response = await Model.aggregate([
     {
       $match: query,
@@ -55,7 +62,8 @@ const list = async (size, page, search) => {
     },
   ]).allowDiskUse(true);
   const newData = response[0];
-  const { data, total } = newData;
+  let { data, total } = newData;
+  total = total || 0;
   return { data, total, limit, pageNum };
 };
 
