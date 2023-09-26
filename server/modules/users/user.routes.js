@@ -22,16 +22,15 @@ router.get("/profile", secureAPI(["admin", "user"]), async (req, res, next) => {
 
 router.put("/profile", secureAPI(["admin", "user"]), async (req, res, next) => {
   try {
-    if (req.currentRoles.includes("admin")) {
-      const { id, ...rest } = req.body;
-      rest.created_by = req.currentUser;
-      rest.updated_by = req.currentUser;
-      const result = await Controller.updateById(id, rest);
-      res.json({ data: result, msg: "success" });
-    } else {
-      const result = await Controller.updateById(req.currentUser, req.body);
-      res.json({ data: result, msg: "success" });
-    }
+    const { id, ...rest } = req.body;
+    rest.created_by = req.currentUser;
+    rest.updated_by = req.currentUser;
+    const me = req.currentRoles.includes("admin")
+      ? req.body.id
+      : req.currentUser;
+    if (!me) throw new Error("User ID is required");
+    const result = await Controller.updateById(me, rest);
+    res.json({ data: result, msg: "success" });
   } catch (e) {
     next(e);
   }
