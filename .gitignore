@@ -133,5 +133,5 @@ dist
 # My Test
 .DS_Store
 playground
-public/users
-public/products
+server/public/users
+server/public/products
