@@ -60,6 +60,11 @@ const list = async (size, page, search) => {
         total: 1,
       },
     },
+    {
+      $project: {
+        "data.password": 0,
+      },
+    },
   ]).allowDiskUse(true);
   const newData = response[0];
   let { data, total } = newData;
