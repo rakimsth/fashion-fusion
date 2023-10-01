@@ -11,7 +11,7 @@ router.get("/", (req, res, next) => {
 });
 
 router.use("/auth", authRouter);
-router.use("/category", categoryRouter);
+router.use("/categories", categoryRouter);
 router.use("/orders", orderRouter);
 router.use("/products", productRouter);
 router.use("/users", userRouter);
