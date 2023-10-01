@@ -26,26 +26,21 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post(
-  "/",
-  secureAPI(["admin"]),
-  upload.array("images", 4),
-  async (req, res, next) => {
-    try {
-      if (req.files) {
-        req.body.images = [];
-        req.files.map((file) =>
-          req.body.images.push("products/".concat(file.filename))
-        );
-      }
-      req.body.created_by = req.currentUser;
-      const result = await Controller.create(req.body);
-      res.json({ data: result, msg: "success" });
-    } catch (e) {
-      next(e);
+router.post("/", upload.array("images", 4), async (req, res, next) => {
+  try {
+    if (req.files) {
+      req.body.images = [];
+      req.files.map((file) =>
+        req.body.images.push("products/".concat(file.filename))
+      );
     }
+    req.body.created_by = req.currentUser;
+    const result = await Controller.create(req.body);
+    res.json({ data: result, msg: "success" });
+  } catch (e) {
+    next(e);
   }
-);
+});
 
 router.get("/:id", async (req, res, next) => {
   try {
@@ -56,21 +51,26 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.put("/:id", secureAPI(["admin"]), async (req, res, next) => {
-  try {
-    if (req.files) {
-      req.body.images = [];
-      req.files.map((file) =>
-        req.body.images.push("products/".concat(file.filename))
-      );
+router.put(
+  "/:id",
+  secureAPI(["admin"]),
+  upload.array("images", 4),
+  async (req, res, next) => {
+    try {
+      if (req.files.length > 0) {
+        req.body.images = [];
+        req.files.map((file) =>
+          req.body.images.push("products/".concat(file.filename))
+        );
+      }
+      req.body.updated_by = req.currentUser;
+      const result = await Controller.updateById(req.params.id, req.body);
+      res.json({ data: result, msg: "success" });
+    } catch (e) {
+      next(e);
     }
-    req.body.updated_by = req.currentUser;
-    const result = await Controller.updateById(req.params.id, req.body);
-    res.json({ data: result, msg: "success" });
-  } catch (e) {
-    next(e);
   }
-});
+);
 
 router.delete("/:id", secureAPI(["admin"]), async (req, res, next) => {
   try {
