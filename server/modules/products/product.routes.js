@@ -15,10 +15,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.get("/", secureAPI([]), async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
-    const { limit, page, name } = req.query;
-    const search = { name };
+    const { limit, page, name, isArchived } = req.query;
+    const search = { name, isArchived };
     const result = await Controller.list(limit, page, search);
     res.json({ data: result, msg: "success" });
   } catch (e) {
@@ -47,7 +47,7 @@ router.post(
   }
 );
 
-router.get("/:id", secureAPI([]), async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const result = await Controller.getById(req.params.id);
     res.json({ data: result, msg: "success" });
