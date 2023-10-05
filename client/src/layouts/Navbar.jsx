@@ -18,16 +18,18 @@ function ENavbar() {
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav className="me-auto">
-            <Nav.Link>
-              <Link to="/products" className="text-decoration-none text-dark">
-                Products
-              </Link>
-            </Nav.Link>
-            <Nav.Link>
-              <Link to="/about" className="text-decoration-none text-dark">
-                About
-              </Link>
-            </Nav.Link>
+            <Link
+              to="/products"
+              className="nav-link text-decoration-none text-dark"
+            >
+              Products
+            </Link>
+            <Link
+              to="/about"
+              className="nav-link text-decoration-none text-dark"
+            >
+              About
+            </Link>
           </Nav>
           <Form className="d-flex">
             <Form.Control
@@ -38,17 +40,13 @@ function ENavbar() {
             />
             <Button variant="outline-success">Search</Button>
           </Form>
-          <Link to="/cart">
-            <a className="btn btn-light">
-              <FiShoppingCart />
-              &nbsp;
-              <Badge bg="secondary">0</Badge>
-            </a>
+          <Link to="/cart" className="btn btn-light">
+            <FiShoppingCart />
+            &nbsp;
+            <Badge bg="secondary">0</Badge>
           </Link>
-          <Link to="/login">
-            <a className="btn btn-light" href="/login">
-              <FiLogIn />
-            </a>
+          <Link to="/login" className="btn btn-light" href="/login">
+            <FiLogIn />
           </Link>
         </Navbar.Collapse>
       </Container>

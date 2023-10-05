@@ -2,12 +2,29 @@ import { Image } from "react-bootstrap";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { BsArrowLeftSquare } from "react-icons/bs";
 
+import { useDispatch, useSelector } from "react-redux";
+import { removeItem } from "../slices/cartSlice";
+
 const Cart = () => {
-  const cart = [1];
-  return <>{cart.length > 0 ? <FilledCart items={cart} /> : <EmptyCart />}</>;
+  const dispatch = useDispatch();
+  const removeFromCart = (id) => {
+    if (id) {
+      dispatch(removeItem(id));
+    }
+  };
+  const { cart } = useSelector((state) => state.cart);
+  return (
+    <>
+      {cart.length > 0 ? (
+        <FilledCart items={cart} removeFromCart={removeFromCart} />
+      ) : (
+        <EmptyCart />
+      )}
+    </>
+  );
 };
 
-const FilledCart = ({ items }) => {
+const FilledCart = ({ items, removeFromCart }) => {
   return (
     <>
       <>
@@ -28,8 +45,8 @@ const FilledCart = ({ items }) => {
               <tbody>
                 {items.map((item, index) => {
                   return (
-                    <tr key={index}>
-                      <td>name</td>
+                    <tr key={item?.id || index}>
+                      <td>{item?.name}</td>
                       <td>
                         <Image
                           width={40}
@@ -38,7 +55,7 @@ const FilledCart = ({ items }) => {
                           thumbnail
                         />
                       </td>
-                      <td>price $</td>
+                      <td>{item?.price}</td>
                       <td>
                         <span
                           className="btn btn-primary"
@@ -46,7 +63,7 @@ const FilledCart = ({ items }) => {
                         >
                           -
                         </span>
-                        <span className="btn btn-info">Quantity</span>
+                        <span className="btn btn-info">{item?.quantity}</span>
                         <span
                           className="btn btn-primary"
                           style={{ margin: "2px" }}
@@ -54,9 +71,15 @@ const FilledCart = ({ items }) => {
                           +
                         </span>
                       </td>
-                      <td>TotalPrice $</td>
+                      <td>{Number(item?.price) * Number(item?.quantity)}</td>
                       <td>
-                        <AiFillCloseCircle color="red" size={24} />
+                        <AiFillCloseCircle
+                          color="red"
+                          size={24}
+                          onClick={() => {
+                            removeFromCart(item?.id);
+                          }}
+                        />
                       </td>
                     </tr>
                   );

@@ -12,6 +12,8 @@ fetch and display data in components
 
 LIFECYCLE
 S => store (Data)
+
+// slices
 A => Actions; Action Creator (Track State Changes)
 D => Dispatch (Mailer; Send action to update the state)
 R => Reducer (Convert data to new state)
