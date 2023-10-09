@@ -11,6 +11,13 @@ import Navbar from "./layouts/Navbar";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import AdminProducts from "./pages/admin/Products";
+import { PrivateRoute } from "./components/Routes";
+
+const adminRoutes = [
+  { path: "/products", component: <AdminProducts />, role: "admin" },
+  { path: "/orders", component: <AdminProducts />, role: "admin" },
+  { path: "/users", component: <AdminProducts />, role: "admin" },
+];
 
 function App() {
   return (
@@ -27,7 +34,19 @@ function App() {
               <Route path="/login" element=<Login /> />
               <Route path="/products" element=<Products /> />
               <Route path="/products/:id" element=<ProductDetail /> />
-              <Route path="/admin/products" element=<AdminProducts /> />
+              {adminRoutes.length > 0 &&
+                adminRoutes.map((route, index) => (
+                  <Route
+                    key={index}
+                    path={`/admin${route?.path}`}
+                    element={
+                      <PrivateRoute role={route?.role}>
+                        {route?.component}
+                      </PrivateRoute>
+                    }
+                  />
+                ))}
+
               <Route path="*" element=<ErrorPage /> />
             </Routes>
           </div>
