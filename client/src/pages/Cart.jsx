@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Image } from "react-bootstrap";
 import numberFormatter from "number-formatter";
 import { AiFillCloseCircle } from "react-icons/ai";
@@ -65,7 +66,7 @@ const FilledCart = ({
   return (
     <>
       <>
-        <h1 className="text-center m-5">Your Cart</h1>
+        <h1 className="text-center m-4">Your Cart</h1>
         <div className="row">
           <div className="col-md-12">
             <table className="table">
@@ -83,12 +84,16 @@ const FilledCart = ({
                 {items.map((item, index) => {
                   return (
                     <tr key={item?.id || index}>
-                      <td>{item?.name}</td>
+                      <td>
+                        {item?.title.length > 25
+                          ? item?.title.substring(0, 60).concat("...")
+                          : item?.title}
+                      </td>
                       <td>
                         <Image
                           width={40}
                           height={40}
-                          src="https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1926&q=80"
+                          src={item?.image}
                           thumbnail
                         />
                       </td>
@@ -139,6 +144,14 @@ const FilledCart = ({
                   <td colSpan="5">Total Carts</td>
                   <td>
                     {numberFormatter("NPR #,##,###.##", Number(getTotal()))}
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan="5">
+                    <Link to="/products">Continue Shopping</Link>
+                  </td>
+                  <td>
+                    <Link to="/checkout">Check Out Now</Link>
                   </td>
                 </tr>
               </tbody>
