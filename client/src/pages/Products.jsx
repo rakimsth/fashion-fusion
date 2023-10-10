@@ -4,9 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { addToCart } from "../slices/cartSlice";
 import { fetchProducts } from "../slices/productSlice";
+import SkeletalLoader from "../components/SkeletalLoader";
 
 const Products = () => {
-  const { products } = useSelector((state) => state.products);
+  const { products, loading } = useSelector((state) => state.products);
+  console.log(loading);
   const dispatch = useDispatch();
 
   const initFetch = useCallback(() => {
@@ -91,9 +93,27 @@ const Products = () => {
                 })
               ) : (
                 <div className="container">
-                  <div className="p-5 text-center text-primary">
-                    No Products Found...
-                  </div>
+                  {products.length === 0 && !loading && (
+                    <div className="p-5 text-center text-primary">
+                      No Products Found...
+                    </div>
+                  )}
+                  {products.length === 0 && loading && (
+                    <div className="row mt-4">
+                      <div className="col">
+                        <SkeletalLoader />
+                      </div>
+                      <div className="col">
+                        <SkeletalLoader />
+                      </div>
+                      <div className="col">
+                        <SkeletalLoader />
+                      </div>
+                      <div className="col">
+                        <SkeletalLoader />
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

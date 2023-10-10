@@ -30,6 +30,7 @@ const productSlice = createSlice({
     builder
       .addCase(fetchProducts.fulfilled, (state, action) => {
         // Add user to the state array
+        state.loading = false;
         state.products = [...action.payload];
       })
       .addCase(fetchProducts.pending, (state) => {
