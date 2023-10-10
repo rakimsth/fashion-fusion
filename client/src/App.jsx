@@ -12,6 +12,7 @@ import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import AdminProducts from "./pages/admin/Products";
 import { PrivateRoute } from "./components/Routes";
+import Checkout from "./pages/Checkout";
 
 const adminRoutes = [
   { path: "/products", component: <AdminProducts />, role: "admin" },
@@ -30,6 +31,7 @@ function App() {
               <Route path="/" element=<Home /> />
               <Route path="/about" element=<About /> />
               <Route path="/cart" element=<Cart /> />
+              <Route path="/checkout" element=<Checkout /> />
               <Route path="/contact" element=<Contact /> />
               <Route path="/login" element=<Login /> />
               <Route path="/products" element=<Products /> />
