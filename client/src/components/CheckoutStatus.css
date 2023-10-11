@@ -23,7 +23,7 @@ p {
   font-size: 20px;
   margin: 0;
 }
-i {
+.successDiv i {
   font-size: 100px;
   line-height: 200px;
   margin-left: -15px;
