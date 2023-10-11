@@ -1,9 +1,10 @@
 import "./Checkout.css";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { create } from "../slices/orderSlice";
 
 export default function Checkout() {
+  const [checkoutUrl, setCheckoutUrl] = useState("");
   const { cart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const [checkout, setCheckout] = useState({
@@ -37,8 +38,52 @@ export default function Checkout() {
       };
     });
     rest.products = products;
-    dispatch(create(rest));
+    rest.checkoutUrl = checkoutUrl;
+    // dispatch(create(rest));
+    window.location.replace(checkoutUrl);
   };
+
+  const createPayments = useCallback(() => {
+    return cart.map((item) => {
+      return {
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: item?.title,
+          },
+          unit_amount: item?.price,
+        },
+        quantity: item?.quantity,
+      };
+    });
+  }, [cart]);
+
+  const createPaymentIntent = useCallback(() => {
+    async function createCheckoutSession(data) {
+      try {
+        const response = await fetch(
+          "http://localhost:3333/create-checkout-session",
+          {
+            method: "POST", // or 'PUT'
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+
+        const cs = await response.json();
+        setCheckoutUrl(cs?.data?.url);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+    createCheckoutSession(createPayments());
+  }, [createPayments]);
+
+  useEffect(() => {
+    createPaymentIntent();
+  }, [createPaymentIntent]);
   return (
     <>
       <div className="row">
