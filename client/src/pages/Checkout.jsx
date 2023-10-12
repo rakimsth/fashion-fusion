@@ -1,10 +1,17 @@
 import "./Checkout.css";
+import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { create } from "../slices/orderSlice";
+import { removeAll } from "../slices/cartSlice";
+import { SERVER_URL } from "../constants";
 
 export default function Checkout() {
-  const [checkoutUrl, setCheckoutUrl] = useState("");
+  const [stripeCheckout, setStripeCheckoutUrl] = useState({
+    stripeId: "",
+    url: "",
+  });
+  const navigate = useNavigate();
   const { cart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const [checkout, setCheckout] = useState({
@@ -16,31 +23,35 @@ export default function Checkout() {
     country: "",
     state: "",
     pobox: "",
-    products: [],
   });
 
   const getTotal = () => {
     return cart.reduce((acc, obj) => acc + obj.price * obj.quantity, 0);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = checkout;
     const { address, pobox, state, country, payment, ...rest } = payload;
-    rest.address = address + state + country + pobox;
+    rest.address = address.concat(", ", state, ", ", pobox, ", ", country);
     rest.amount = getTotal();
     const products = cart.map((item) => {
       return {
         product: item?.id,
-        quantity: item?.quantity,
-        price: item?.price,
+        quantity: Number(item?.quantity),
+        price: Number(item?.price),
         amount: Number(item?.quantity) * Number(item?.price),
       };
     });
     rest.products = products;
-    rest.checkoutUrl = checkoutUrl;
-    // dispatch(create(rest));
-    window.location.replace(checkoutUrl);
+    rest.orderId = stripeCheckout?.stripeId;
+    const data = await dispatch(create(rest));
+    if (data && data.payload.msg === "success") {
+      dispatch(removeAll());
+      window.location.replace(stripeCheckout?.url);
+    } else {
+      navigate("/checkout/failed");
+    }
   };
 
   const createPayments = useCallback(() => {
@@ -51,34 +62,31 @@ export default function Checkout() {
           product_data: {
             name: item?.title,
           },
-          unit_amount: item?.price,
+          unit_amount: Number(item?.price) * 100,
         },
-        quantity: item?.quantity,
+        quantity: Number(item?.quantity),
       };
     });
   }, [cart]);
 
-  const createPaymentIntent = useCallback(() => {
-    async function createCheckoutSession(data) {
-      try {
-        const response = await fetch(
-          "http://localhost:3333/create-checkout-session",
-          {
-            method: "POST", // or 'PUT'
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        );
-
-        const cs = await response.json();
-        setCheckoutUrl(cs?.data?.url);
-      } catch (error) {
-        console.error("Error:", error);
-      }
+  const createPaymentIntent = useCallback(async () => {
+    try {
+      const response = await fetch(`${SERVER_URL}/create-checkout-session`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(createPayments()),
+      });
+      const cs = await response.json();
+      setStripeCheckoutUrl((prev) => ({
+        ...prev,
+        stripeId: cs.data.id,
+        url: cs.data.url,
+      }));
+    } catch (error) {
+      console.error("Error:", error);
     }
-    createCheckoutSession(createPayments());
   }, [createPayments]);
 
   useEffect(() => {
@@ -413,3 +421,10 @@ export default function Checkout() {
     </>
   );
 }
+
+// Checkout page cleanup
+// Order form => order create in db using order API
+// Stripe check for payment completion
+// based on stripe answer, update the order status
+
+// Seed db reset

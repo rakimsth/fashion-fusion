@@ -53,6 +53,7 @@ const cartSlice = createSlice({
     },
     removeAll: (state) => {
       state.cart = [];
+      state.quantity = 0;
     },
   },
 });
