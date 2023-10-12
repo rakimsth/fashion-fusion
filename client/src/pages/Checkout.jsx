@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { create } from "../slices/orderSlice";
 import { removeAll } from "../slices/cartSlice";
-import { SERVER_URL } from "../constants";
+import { URLS } from "../constants";
+import API from "../utils/api";
 
 export default function Checkout() {
   const [stripeCheckout, setStripeCheckoutUrl] = useState({
@@ -71,14 +72,12 @@ export default function Checkout() {
 
   const createPaymentIntent = useCallback(async () => {
     try {
-      const response = await fetch(`${SERVER_URL}/create-checkout-session`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(createPayments()),
-      });
-      const cs = await response.json();
+      const data = createPayments();
+      const response = await API.post(
+        `${URLS.ORDERS}/create-checkout-session`,
+        data
+      );
+      const cs = response.data;
       setStripeCheckoutUrl((prev) => ({
         ...prev,
         stripeId: cs.data.id,
@@ -421,10 +420,3 @@ export default function Checkout() {
     </>
   );
 }
-
-// Checkout page cleanup
-// Order form => order create in db using order API
-// Stripe check for payment completion
-// based on stripe answer, update the order status
-
-// Seed db reset
