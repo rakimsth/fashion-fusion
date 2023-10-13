@@ -10,7 +10,7 @@ const orderSchema = new Schema({
       quantity: { type: Number, required: true },
       price: { type: Number, required: true },
       amount: { type: Number, required: true },
-      product: { type: String, required: true },
+      product: { type: ObjectId, ref: "Product", required: true },
     },
   ],
   paymentMethod: {
@@ -26,7 +26,7 @@ const orderSchema = new Schema({
   name: { type: String, required: true },
   status: {
     type: String,
-    enum: ["pending", "completed", "expired"],
+    enum: ["pending", "completed", "failed"],
     default: "pending",
   },
   ...commonSchema,

@@ -6,16 +6,16 @@ const create = (payload) => {
   payload.id = uuidv4();
   // Decrease product count from product model
   const products = payload?.products;
-  // products.map(async (product) => {
-  //   const { product: id, quantity } = product;
-  //   const productInfo = await productModel.findOne({ _id: id });
-  //   if (!productInfo) throw new Error("Product not found");
-  //   await productModel.findOneAndUpdate(
-  //     { _id: id },
-  //     { quantity: productInfo?.quantity - quantity },
-  //     { new: true }
-  //   );
-  // });
+  products.map(async (product) => {
+    const { product: id, quantity } = product;
+    const productInfo = await productModel.findOne({ _id: id });
+    if (!productInfo) throw new Error("Product not found");
+    await productModel.findOneAndUpdate(
+      { _id: id },
+      { quantity: productInfo?.quantity - quantity },
+      { new: true }
+    );
+  });
   return Model.create(payload);
 };
 
@@ -122,7 +122,9 @@ const approve = (id, payload) => {
 };
 
 const updateBasedonPayment = async (stripePayload) => {
+  console.log({ stripePayload });
   const { id, status } = stripePayload;
+  console.log({ id, status });
   const checkOrder = await Model.findOne({ orderId: id });
   if (!checkOrder) throw new Error("Order not found");
   if (status === "complete") {
@@ -133,20 +135,22 @@ const updateBasedonPayment = async (stripePayload) => {
     );
   }
   if (status === "expired") {
-    await Model.findOneAndUpdate(
+    const order = await Model.findOneAndUpdate(
       { orderId: id },
       { status: "failed" },
       { new: true }
     );
     // Update the product quantity accordingly
-  }
-  if (status === "failed") {
-    await Model.findOneAndUpdate(
-      { orderId: id },
-      { status: "failed" },
-      { new: true }
-    );
-    // Update the product quantity accordingly
+    order.products.map(async (product) => {
+      const { product: id, quantity } = product;
+      const productInfo = await productModel.findOne({ _id: id });
+      if (!productInfo) throw new Error("Product not found");
+      await productModel.findOneAndUpdate(
+        { _id: id },
+        { quantity: productInfo?.quantity + quantity },
+        { new: true }
+      );
+    });
   }
 };
 

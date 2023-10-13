@@ -70,57 +70,19 @@ router.delete("/:id", secureAPI(["admin"]), async (req, res, next) => {
 
 router.post("/create-checkout-session", async (req, res, next) => {
   try {
-    console.log(req.body);
+    let dt = new Date();
+    dt.setMinutes(dt.getMinutes() + 30);
     const session = await stripe.checkout.sessions.create({
       line_items: req.body,
       mode: "payment",
       success_url: `${FRONTEND_URL}/checkout/success`,
       cancel_url: `${FRONTEND_URL}/checkout/failed`,
+      expires_at: dt,
     });
     res.json({ data: { id: session.id, url: session.url }, msg: "success" });
   } catch (e) {
     next(e);
   }
 });
-
-router.post(
-  "/webhook",
-  express.raw({ type: "application/json" }),
-  async (req, res) => {
-    const sig = req.headers["stripe-signature"];
-    try {
-      const event = stripe.webhooks.constructEvent(
-        req.body,
-        sig,
-        endpointSecret
-      );
-      switch (event.type) {
-        case "checkout.session.async_payment_failed":
-          const async_payment_failed = event.data.object;
-          await Controller.updateBasedonPayment(async_payment_failed);
-          break;
-        case "checkout.session.async_payment_succeeded":
-          const async_payment_succeeded = event.data.object;
-          await Controller.updateBasedonPayment(async_payment_succeeded);
-          break;
-        case "checkout.session.completed":
-          const session_completed = event.data.object;
-          await Controller.updateBasedonPayment(session_completed);
-          break;
-        case "checkout.session.expired":
-          const session_expired = event.data.object;
-          await Controller.updateBasedonPayment(session_expired);
-          break;
-        default:
-          console.log(`Unhandled event type ${event.type}`);
-      }
-    } catch (err) {
-      res.status(400).send(`Webhook Error: ${err.message}`);
-      return;
-    }
-
-    res.send();
-  }
-);
 
 module.exports = router;

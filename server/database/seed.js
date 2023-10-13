@@ -70,8 +70,8 @@ var setup = {
       price: 4500,
       category: cat3?._id,
       images: [
-        "https://freakins.com/cdn/shop/files/DSC06803-Edit.jpg?v=1692190880",
-        "https://cdn.pixelbin.io/v2/black-bread-289bfa/iix9pB/wrkr/t.resize(h:600,w:510)/data/gas/21072022/410316769_A222_1.jpg",
+        "https://static-01.daraz.com.np/p/a3970f781c7c4c006c0da925609d83b7.jpg",
+        "https://static-01.daraz.com.np/original/3c7e0f8ac1d0885a656e0572a683fc09.jpg",
       ],
     });
     console.log("-----Creating Products-----");
