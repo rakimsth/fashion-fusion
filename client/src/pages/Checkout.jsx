@@ -19,7 +19,7 @@ export default function Checkout() {
     name: "",
     email: "",
     address: "",
-    payment: "",
+    paymentMethod: "COD",
     amount: 0,
     country: "",
     state: "",
@@ -33,7 +33,7 @@ export default function Checkout() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = checkout;
-    const { address, pobox, state, country, payment, ...rest } = payload;
+    const { address, pobox, state, country, ...rest } = payload;
     rest.address = address.concat(", ", state, ", ", pobox, ", ", country);
     rest.amount = getTotal();
     const products = cart.map((item) => {
@@ -49,7 +49,9 @@ export default function Checkout() {
     const data = await dispatch(create(rest));
     if (data && data.payload.msg === "success") {
       dispatch(removeAll());
-      window.location.replace(stripeCheckout?.url);
+      checkout?.paymentMethod === "STRIPE"
+        ? window.location.replace(stripeCheckout?.url)
+        : navigate("/checkout/success");
     } else {
       navigate("/checkout/failed");
     }
@@ -280,8 +282,12 @@ export default function Checkout() {
                 type="radio"
                 name="inlineRadioOptions"
                 value="COD"
-                disabled
-                checked
+                checked={checkout?.paymentMethod === "COD" ? true : false}
+                onChange={() => {
+                  setCheckout((prev) => {
+                    return { ...prev, paymentMethod: "COD" };
+                  });
+                }}
               />
               <label className="form-check-label" htmlFor="inlineRadio1">
                 Cash on delivery
@@ -292,118 +298,18 @@ export default function Checkout() {
                 className="form-check-input"
                 type="radio"
                 name="inlineRadioOptions"
-                value="CC"
-                disabled
+                value="STRIPE"
+                checked={checkout?.paymentMethod === "STRIPE" ? true : false}
+                onChange={() => {
+                  setCheckout((prev) => {
+                    return { ...prev, paymentMethod: "STRIPE" };
+                  });
+                }}
               />
               <label className="form-check-label" htmlFor="inlineRadio2">
-                Credit Card / Debit Card
+                Stripe
               </label>
             </div>
-            <div className="form-check form-check-inline">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="inlineRadioOptions"
-                value="Paypal"
-                disabled
-              />
-              <label className="form-check-label" htmlFor="inlineRadio3">
-                Paypal
-              </label>
-            </div>
-
-            {/* <div className="d-block my-3">
-              <div className="custom-control custom-radio">
-                <input
-                  id="credit"
-                  name="paymentMethod"
-                  type="radio"
-                  className="custom-control-input"
-                  checked
-                  required
-                />
-                <label className="custom-control-label" htmlFor="credit">
-                  Credit card
-                </label>
-              </div>
-              <div className="custom-control custom-radio">
-                <input
-                  id="debit"
-                  name="paymentMethod"
-                  type="radio"
-                  className="custom-control-input"
-                  required
-                />
-                <label className="custom-control-label" htmlFor="debit">
-                  Debit card
-                </label>
-              </div>
-              <div className="custom-control custom-radio">
-                <input
-                  id="paypal"
-                  name="paymentMethod"
-                  type="radio"
-                  className="custom-control-input"
-                  required
-                />
-                <label className="custom-control-label" htmlFor="paypal">
-                  Paypal
-                </label>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6 mb-3">
-                <label htmlFor="cc-name">Name on card</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="cc-name"
-                  placeholder=""
-                  required
-                />
-                <small className="text-muted">
-                  Full name as displayed on card
-                </small>
-                <div className="invalid-feedback">Name on card is required</div>
-              </div>
-              <div className="col-md-6 mb-3">
-                <label htmlFor="cc-number">Credit card number</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="cc-number"
-                  placeholder=""
-                  required
-                />
-                <div className="invalid-feedback">
-                  Credit card number is required
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-3 mb-3">
-                <label htmlFor="cc-expiration">Expiration</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="cc-expiration"
-                  placeholder=""
-                  required
-                />
-                <div className="invalid-feedback">Expiration date required</div>
-              </div>
-              <div className="col-md-3 mb-3">
-                <label htmlFor="cc-expiration">CVV</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="cc-cvv"
-                  placeholder=""
-                  required
-                />
-                <div className="invalid-feedback">Security code required</div>
-              </div>
-            </div> */}
             <hr className="mb-4" />
 
             <div className="d-grid gap-2">

@@ -70,14 +70,14 @@ router.delete("/:id", secureAPI(["admin"]), async (req, res, next) => {
 
 router.post("/create-checkout-session", async (req, res, next) => {
   try {
-    let dt = new Date();
-    dt.setMinutes(dt.getMinutes() + 30);
+    const added30Mins = new Date();
+    added30Mins.setMinutes(added30Mins.getMinutes() + 30);
     const session = await stripe.checkout.sessions.create({
       line_items: req.body,
       mode: "payment",
       success_url: `${FRONTEND_URL}/checkout/success`,
       cancel_url: `${FRONTEND_URL}/checkout/failed`,
-      expires_at: dt,
+      expires_at: added30Mins,
     });
     res.json({ data: { id: session.id, url: session.url }, msg: "success" });
   } catch (e) {
