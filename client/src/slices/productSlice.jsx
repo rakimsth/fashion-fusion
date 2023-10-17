@@ -30,6 +30,11 @@ const productSlice = createSlice({
       state.currentPage = 1;
       state.limit = action.payload;
     },
+    getById: (state, action) => {
+      state.product = state.products.find(
+        (item) => item?._id === action.payload
+      );
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -51,6 +56,6 @@ const productSlice = createSlice({
   },
 });
 
-export const { setCurrentPage, setLimit } = productSlice.actions;
+export const { setCurrentPage, setLimit, getById } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;
