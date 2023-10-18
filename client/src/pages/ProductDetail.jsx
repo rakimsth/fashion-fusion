@@ -2,24 +2,26 @@ import "./ProductDetail.css";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useCallback, useEffect } from "react";
-import { getById } from "../slices/productSlice";
-import { addToCart } from "../slices/cartSlice";
+import { useCallback, useEffect, useState } from "react";
+import { fetchProducts, getById } from "../slices/productSlice";
+import { updateCart } from "../slices/cartSlice";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { products, product } = useSelector((state) => state.products);
+  const [quantity, setQuantity] = useState(1);
+  const [random4Items, setRandom4Items] = useState([]);
 
   const getProduct = useCallback(() => {
     dispatch(getById(id));
   }, [dispatch, id]);
 
-  useEffect(() => {
-    getProduct();
-  }, [getProduct]);
+  const fetchAllProduct = useCallback(() => {
+    dispatch(fetchProducts({ limit: 40, page: 1 }));
+  }, [dispatch]);
 
-  const getRandomProducts = () => {
+  const getRandomProducts = useCallback(() => {
     const firstRandomIndex = Math.floor(Math.random() * products.length);
     const secRandomIndex = Math.floor(Math.random() * products.length);
     const thirdRandomIndex = Math.floor(Math.random() * products.length);
@@ -30,27 +32,50 @@ const ProductDetail = () => {
       products[thirdRandomIndex],
       products[fourthRandomIndex],
     ];
-    return randProduct;
-  };
+    setRandom4Items(randProduct);
+  }, [products]);
+
+  useEffect(() => {
+    getProduct();
+    getRandomProducts();
+    if (products?.length === 0) fetchAllProduct();
+  }, [fetchAllProduct, getProduct, getRandomProducts, products]);
   return (
     <section>
       <div className="container flex mt-2 d-flex justify-content-center">
         <div className="col-lg-8 border p-2 bg-white">
-          <div className="row hedding m-0 pl-3 pt-0 pb-3"></div>
+          <div className="row hedding m-0 pl-3 pt-0 pb-3">
+            {product?.quantity < 1 && (
+              <div className="text-danger">Out of Stock</div>
+            )}
+          </div>
           <div className="row m-0">
             <div className="col-lg-4 left-side-product-box pb-3">
-              <img src={product?.images[0]} className="border p-3" />
+              <img
+                src={
+                  product?.images && product?.images.length > 0
+                    ? product?.images[0]
+                    : ""
+                }
+                className="border p-3"
+              />
               <span className="sub-img">
-                {product.images.map((image, index) => {
-                  return <img key={index} src={image} className="border p-2" />;
-                })}
+                {product?.images && product?.images.length > 0
+                  ? product.images.slice(1).map((image, index) => {
+                      return (
+                        <img key={index} src={image} className="border p-2" />
+                      );
+                    })
+                  : null}
               </span>
             </div>
             <div className="col-lg-8">
               <div className="right-side-pro-detail border p-3 m-0">
                 <div className="row">
                   <div className="col-lg-12">
-                    <span>{product?.alias.toString()}</span>
+                    <span>
+                      {product?.alias ? product?.alias.toString() : ""}
+                    </span>
                     <p className="m-0 p-0">{product?.name}</p>
                   </div>
                   <div className="col-lg-12">
@@ -59,13 +84,13 @@ const ProductDetail = () => {
                   </div>
                   <div className="col-lg-12 pt-2">
                     <h5>Product Detail</h5>
-                    <span>{product?.descriptions}</span>
+                    <span>{product?.description}</span>
                     <hr className="m-0 pt-2 mt-2" />
                   </div>
                   <div className="col-lg-12">
                     <p className="tag-section">
                       <strong>Tag : </strong>
-                      <a href="">{product?.category}</a>
+                      <a href="">{product?.category_name}</a>
                     </p>
                   </div>
                   <div className="col-lg-12">
@@ -74,8 +99,10 @@ const ProductDetail = () => {
                       type="number"
                       min="1"
                       max={String(product?.quantity)}
-                      defaultValue="1"
+                      value={quantity}
+                      onChange={(e) => setQuantity(Number(e.target.value))}
                       className="form-control text-center w-100"
+                      disabled={product?.quantity < 1 ? true : false}
                     />
                   </div>
                   <div className="col-lg-12 mt-3">
@@ -84,8 +111,9 @@ const ProductDetail = () => {
                         <button
                           className="btn btn-danger w-100"
                           onClick={() => {
-                            dispatch(addToCart(product));
+                            dispatch(updateCart({ product, quantity }));
                           }}
+                          disabled={product?.quantity < 1 ? true : false}
                         >
                           Add To Cart
                         </button>
@@ -107,11 +135,13 @@ const ProductDetail = () => {
             </div>
           </div>
           <div className="row mt-3 p-0 text-center pro-box-section">
-            {getRandomProducts().map((item, index) => {
+            {random4Items.map((item, index) => {
               return (
                 <div key={index} className="col-lg-3 pb-2">
                   <div className="pro-box border p-0 m-0">
-                    <img src={item.images[0]} />
+                    <Link to={`/products/${item?._id}`}>
+                      <img src={item?.images[0]} />
+                    </Link>
                   </div>
                 </div>
               );

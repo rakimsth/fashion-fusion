@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { list } from "../services/products";
+import { getProduct, list } from "../services/products";
 
 const initialState = {
   currentPage: 1,
@@ -19,6 +19,11 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
+export const getById = createAsyncThunk("products/getById", async (id) => {
+  const resp = await getProduct(id);
+  return resp.data;
+});
+
 const productSlice = createSlice({
   name: "products",
   initialState,
@@ -29,11 +34,6 @@ const productSlice = createSlice({
     setLimit: (state, action) => {
       state.currentPage = 1;
       state.limit = action.payload;
-    },
-    getById: (state, action) => {
-      state.product = state.products.find(
-        (item) => item?._id === action.payload
-      );
     },
   },
   extraReducers: (builder) => {
@@ -51,11 +51,25 @@ const productSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         // Add user to the state array
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.error.message;
+      })
+      .addCase(getById.fulfilled, (state, action) => {
+        // Add user to the state array
+        state.loading = false;
+        state.product = action.payload.data;
+      })
+      .addCase(getById.pending, (state) => {
+        // Add user to the state array
+        state.loading = true;
+      })
+      .addCase(getById.rejected, (state, action) => {
+        // Add user to the state array
+        state.loading = false;
+        state.error = action.error.message;
       });
   },
 });
 
-export const { setCurrentPage, setLimit, getById } = productSlice.actions;
+export const { setCurrentPage, setLimit } = productSlice.actions;
 
 export const productReducer = productSlice.reducer;
