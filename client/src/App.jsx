@@ -12,20 +12,28 @@ import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import AdminProducts from "./pages/admin/Products";
 import Checkout from "./pages/Checkout";
-import { PrivateRoute } from "./components/Routes";
+import { AdminRoute, PrivateRoute } from "./components/Routes";
 import { CheckoutPageStatus } from "./components/CheckoutStatus";
+import Dashboard from "./pages/admin/Dashboard";
+import AdminNavbar from "./layouts/Adminbar";
+
+import { useSelector } from "react-redux";
 
 const adminRoutes = [
+  { path: "/categories", component: <AdminProducts />, role: "admin" },
+  { path: "/dashboard", component: <Dashboard />, role: "admin" },
   { path: "/products", component: <AdminProducts />, role: "admin" },
   { path: "/orders", component: <AdminProducts />, role: "admin" },
   { path: "/users", component: <AdminProducts />, role: "admin" },
 ];
 
 function App() {
+  const { isLoggedIn } = useSelector((state) => state.auth);
   return (
     <div className="">
       <BrowserRouter>
-        <Navbar />
+        {isLoggedIn ? <AdminNavbar /> : <Navbar />}
+
         <main className="flex-shrink-0 d-flex flex-column min-vh-100">
           <div className="container mt-2 mb-5">
             <Routes>
@@ -43,7 +51,14 @@ function App() {
                 />
               />
               <Route path="/contact" element=<Contact /> />
-              <Route path="/login" element=<Login /> />
+              <Route
+                path="/login"
+                element={
+                  <PrivateRoute>
+                    <Login />
+                  </PrivateRoute>
+                }
+              />
               <Route path="/products" element=<Products /> />
               <Route path="/products/:id" element=<ProductDetail /> />
               {adminRoutes.length > 0 &&
@@ -52,9 +67,9 @@ function App() {
                     key={index}
                     path={`/admin${route?.path}`}
                     element={
-                      <PrivateRoute role={route?.role}>
+                      <AdminRoute role={route?.role}>
                         {route?.component}
-                      </PrivateRoute>
+                      </AdminRoute>
                     }
                   />
                 ))}
