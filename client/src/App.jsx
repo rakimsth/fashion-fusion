@@ -11,6 +11,7 @@ import Navbar from "./layouts/Navbar";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import AdminProducts from "./pages/admin/Products";
+import AddProduct from "./pages/admin/AddProduct";
 import Checkout from "./pages/Checkout";
 import { AdminRoute, PrivateRoute } from "./components/Routes";
 import { CheckoutPageStatus } from "./components/CheckoutStatus";
@@ -23,6 +24,7 @@ const adminRoutes = [
   { path: "/categories", component: <AdminProducts />, role: "admin" },
   { path: "/dashboard", component: <Dashboard />, role: "admin" },
   { path: "/products", component: <AdminProducts />, role: "admin" },
+  { path: "/products/add", component: <AddProduct />, role: "admin" },
   { path: "/orders", component: <AdminProducts />, role: "admin" },
   { path: "/users", component: <AdminProducts />, role: "admin" },
 ];
@@ -38,6 +40,18 @@ function App() {
           <div className="container mt-2 mb-5">
             <Routes>
               <Route path="/" element=<Home /> />
+              {adminRoutes.length > 0 &&
+                adminRoutes.map((route, index) => (
+                  <Route
+                    key={index}
+                    path={`/admin${route?.path}`}
+                    element={
+                      <AdminRoute role={route?.role}>
+                        {route?.component}
+                      </AdminRoute>
+                    }
+                  />
+                ))}
               <Route path="/about" element=<About /> />
               <Route path="/cart" element=<Cart /> />
               <Route path="/checkout" element=<Checkout /> />
@@ -61,18 +75,7 @@ function App() {
               />
               <Route path="/products" element=<Products /> />
               <Route path="/products/:id" element=<ProductDetail /> />
-              {adminRoutes.length > 0 &&
-                adminRoutes.map((route, index) => (
-                  <Route
-                    key={index}
-                    path={`/admin${route?.path}`}
-                    element={
-                      <AdminRoute role={route?.role}>
-                        {route?.component}
-                      </AdminRoute>
-                    }
-                  />
-                ))}
+
               <Route path="*" element=<ErrorPage /> />
             </Routes>
           </div>

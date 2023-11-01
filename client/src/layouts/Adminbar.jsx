@@ -1,22 +1,24 @@
 import { Link } from "react-router-dom";
-import { FiLogOut, FiShoppingCart } from "react-icons/fi";
-import { Badge, Button } from "react-bootstrap";
+import { FiLogOut } from "react-icons/fi";
 import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 
+import { useNavigate } from "react-router-dom";
 import { removeToken } from "../utils/session";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogOut } from "../slices/authSlice";
 
 function AdminNavbar() {
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const handleLogout = () => {
+    console.log("jjs");
     removeToken();
     dispatch(setLogOut());
+    navigate("/");
   };
 
   return (
@@ -63,7 +65,7 @@ function AdminNavbar() {
               Welcome <strong>{user?.name}</strong>
             </div>
           </Nav>
-          <button className="btn btn-light" onClick={handleLogout}>
+          <button className="btn btn-light" onClick={() => handleLogout()}>
             <FiLogOut />
           </button>
         </Navbar.Collapse>

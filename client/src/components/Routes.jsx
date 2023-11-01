@@ -4,12 +4,22 @@ import { getToken } from "../utils/session";
 
 export const AdminRoute = ({ children, role }) => {
   return (
-    <>{isLoggedIn() && isAdmin(role) ? children : <Navigate to={"/login"} />}</>
+    <>
+      {isLoggedIn() && isAdmin(role) ? (
+        children
+      ) : (
+        <Navigate replace to={"/login"} />
+      )}
+    </>
   );
 };
 
 export const PrivateRoute = ({ children }) => {
-  return <>{isLoggedIn() ? <Navigate to={"/admin/dashboard"} /> : children}</>;
+  return (
+    <>
+      {isLoggedIn() ? <Navigate replace to={"/admin/dashboard"} /> : children}
+    </>
+  );
 };
 
 const isAdmin = (role) => {

@@ -66,3 +66,29 @@ if login is correct, redirect user to /admin/dashboard page
 5. Since we are logged in as admin, send access token on every api call
 
 6. Start create product list page
+
+// Sign up Page
+
+1. Sign up => call that API route to register the user
+2. on register success, redirect user to add their token
+3. You have successfully registered; show this message
+
+4. Create 2 component called Verify and Regenerate
+
+5. Create hook called useSignUp; Call functions such as register, verify, regenerate in it
+
+6. Bind verify component with verify and regenerate hooks
+
+7. handle the errors
+
+File Upload in Add Product Page
+
+<!-- 1. Use React input type file to add the file into reactjs -->
+<!-- 2. Update the state of the file in array format -->
+
+<!-- 3. add all the payload in the form data -->
+<!-- 4. Set request header to form Data -->
+<!-- 5. submit the data into be from API using axios -->
+
+6. success => product successfully added => redirect to products list page
+   failure => stay in the same page => display Something went wrong message
