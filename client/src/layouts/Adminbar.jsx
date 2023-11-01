@@ -14,10 +14,9 @@ function AdminNavbar() {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    console.log("jjs");
-    removeToken();
+  const handleLogout = async () => {
     dispatch(setLogOut());
+    removeToken();
     navigate("/");
   };
 
