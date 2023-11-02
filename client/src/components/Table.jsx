@@ -1,6 +1,27 @@
+import { BsFillTrashFill, BsFillPencilFill } from "react-icons/bs";
 import { Table } from "react-bootstrap";
+import Swal from "sweetalert2";
 
-export default function Tables({ headers, data }) {
+export default function Tables({ headers, data, remove, msg, url }) {
+  const handleDelete = async (id) => {
+    const swalRes = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+    if (swalRes.isConfirmed) {
+      // Delete Hook
+      await remove(url, id);
+      Swal.fire("Deleted!", msg, "success");
+    }
+  };
+  const handleEdit = async (id) => {
+    console.log("edit called", id);
+  };
   return (
     <div>
       <Table striped bordered hover>
@@ -11,6 +32,7 @@ export default function Tables({ headers, data }) {
                   return <th key={idx}>{d}</th>;
                 })
               : null}
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -22,6 +44,15 @@ export default function Tables({ headers, data }) {
                     <td>{d?.name}</td>
                     <td>{d?.quantity}</td>
                     <td>{d?.price}</td>
+                    <td>
+                      <div className="flex d-flex justify-content-evenly">
+                        <BsFillTrashFill
+                          color="red"
+                          onClick={() => handleDelete(d?._id)}
+                        />
+                        <BsFillPencilFill onClick={() => handleEdit(d?._id)} />
+                      </div>
+                    </td>
                   </tr>
                 );
               })

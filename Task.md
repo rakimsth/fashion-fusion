@@ -90,5 +90,15 @@ File Upload in Add Product Page
 <!-- 4. Set request header to form Data -->
 <!-- 5. submit the data into be from API using axios -->
 
-6. success => product successfully added => redirect to products list page
-   failure => stay in the same page => display Something went wrong message
+<!-- 6. success => product successfully added => redirect to products list page
+   failure => stay in the same page => display Something went wrong message -->
+
+Delete Product from Product List Page
+
+<!-- 1. Add the Edit and Delete Icon in the table -->
+<!-- 2. Create a hook that deletes the data using id -->
+
+<!-- 3. Add swal to confirm the decision before deletion -->
+<!-- 4. Connect the hook to the button/icons -->
+
+<!-- 5. Delete success => refetch the product list page using (dispatch and fetchProducts); fetchProducts be mindful about sending {} during dispatch -->
