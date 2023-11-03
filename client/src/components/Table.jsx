@@ -1,8 +1,10 @@
 import { BsFillTrashFill, BsFillPencilFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 import { Table } from "react-bootstrap";
 import Swal from "sweetalert2";
 
 export default function Tables({ headers, data, remove, msg, url }) {
+  const navigate = useNavigate();
   const handleDelete = async (id) => {
     const swalRes = await Swal.fire({
       title: "Are you sure?",
@@ -20,7 +22,7 @@ export default function Tables({ headers, data, remove, msg, url }) {
     }
   };
   const handleEdit = async (id) => {
-    console.log("edit called", id);
+    navigate(`/admin/products/${id}`);
   };
   return (
     <div>

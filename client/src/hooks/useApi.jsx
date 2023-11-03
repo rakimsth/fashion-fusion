@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import API from "../utils/api";
 
 import { useDispatch } from "react-redux";
@@ -10,6 +10,20 @@ const useApi = () => {
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const getById = useCallback(async (url, id) => {
+    try {
+      setLoading(true);
+      const { data } = await API.get(`${url}/${id}`);
+      setData(data.data);
+      return data.data;
+    } catch (e) {
+      const errMsg = e?.response?.data?.msg || "Something went wrong...";
+      setError(errMsg);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const deleteById = async (url, id) => {
     try {
@@ -32,11 +46,16 @@ const useApi = () => {
   const updateById = async (url, id, payload) => {
     try {
       setLoading(true);
-      const { data } = await API.put(`${url}/${id}`, payload);
+      const { data } = await API.put(`${url}/${id}`, payload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       if (data.msg === "success") {
         setData(data.data);
         setMsg("Data Updated Successfully");
       }
+      return data;
     } catch (e) {
       const errMsg = e.message || "Something went wrong";
       setError(errMsg);
@@ -45,7 +64,7 @@ const useApi = () => {
     }
   };
 
-  return { data, msg, loading, error, deleteById, updateById };
+  return { data, msg, loading, error, deleteById, getById, updateById };
 };
 
 export default useApi;

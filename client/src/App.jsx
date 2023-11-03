@@ -12,6 +12,7 @@ import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import AdminProducts from "./pages/admin/Products";
 import AddProduct from "./pages/admin/AddProduct";
+import EditProduct from "./pages/admin/EditProduct";
 import Checkout from "./pages/Checkout";
 import { AdminRoute, PrivateRoute } from "./components/Routes";
 import { CheckoutPageStatus } from "./components/CheckoutStatus";
@@ -25,6 +26,7 @@ const adminRoutes = [
   { path: "/dashboard", component: <Dashboard />, role: "admin" },
   { path: "/products", component: <AdminProducts />, role: "admin" },
   { path: "/products/add", component: <AddProduct />, role: "admin" },
+  { path: "/products/:id", component: <EditProduct />, role: "admin" },
   { path: "/orders", component: <AdminProducts />, role: "admin" },
   { path: "/users", component: <AdminProducts />, role: "admin" },
 ];

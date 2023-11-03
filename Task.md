@@ -102,3 +102,17 @@ Delete Product from Product List Page
 <!-- 4. Connect the hook to the button/icons -->
 
 <!-- 5. Delete success => refetch the product list page using (dispatch and fetchProducts); fetchProducts be mindful about sending {} during dispatch -->
+
+Edit Product from Product List Page
+
+1. On button click, redirect user to the /edit page route
+2. render Edit page component
+3. get id from the browser url, using useParams hook from react-router-dom
+4. call fetchById custom hook to get the data from the api (real time)
+   alternative option
+5. front end already has that id data, we will filter from the product array and use that to load the data
+6. load and update the state of the productDetail
+7. give onChange event to make changes to the data
+8. put the data again to the server using updateHook
+9. update successful, redirect user to /products page or leave him/her on the same page
+10. show the error if occured
