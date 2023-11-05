@@ -116,3 +116,17 @@ Edit Product from Product List Page
 8. put the data again to the server using updateHook
 9. update successful, redirect user to /products page or leave him/her on the same page
 10. show the error if occured
+
+React routing v6 admin panel change
+
+1. react router v6 install
+2. 2 layout
+   1. admin layout (JWT Token valid)
+   2. buyers layout (JWT Token invalid / no access_token )
+3. Route management v6 Outlet
+
+if logged in;
+
+admin bar / normal nav bar
+content (Component)
+footer
