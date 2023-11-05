@@ -2,8 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { Alert, Button, Form } from "react-bootstrap";
 import { useCallback, useEffect, useState } from "react";
 
-import { list } from "../../services/category";
-import { create } from "../../services/products";
+import { list } from "../../../services/category";
+import { create } from "../../../services/products";
 
 export default function AddProduct() {
   const navigate = useNavigate();

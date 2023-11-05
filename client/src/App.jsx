@@ -1,5 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+// Layout
+import { AdminRoute, PrivateRoute } from "./components/Routes";
+import Layout from "./layouts/Layout";
+import AdminLayout from "./layouts/AdminLayout";
+
+// Default routes
 import About from "./pages/About";
 import Cart from "./pages/Cart";
 import Contact from "./pages/Contact";
@@ -8,15 +14,15 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
-import AdminProducts from "./pages/admin/Products";
-import AddProduct from "./pages/admin/AddProduct";
-import EditProduct from "./pages/admin/EditProduct";
 import Checkout from "./pages/Checkout";
-import { AdminRoute, PrivateRoute } from "./components/Routes";
 import { CheckoutPageStatus } from "./components/CheckoutStatus";
+
+// Admin routes
 import Dashboard from "./pages/admin/Dashboard";
-import Layout from "./layouts/Layout";
-import AdminLayout from "./layouts/AdminLayout";
+import { AdminProducts, AddProduct, EditProduct } from "./pages/admin/products";
+import { AddCat, EditCat, ListCat } from "./pages/admin/categories";
+import { AddOrders, EditOrders, ListOrders } from "./pages/admin/orders";
+import { AddUsers, EditUsers, ListUsers } from "./pages/admin/users";
 
 function App() {
   return (
@@ -89,15 +95,23 @@ function App() {
               path="/admin/categories"
               element={
                 <AdminRoute role="admin">
-                  <AdminProducts />
+                  <ListCat />
                 </AdminRoute>
               }
             />
             <Route
-              path="/admin/users"
+              path="/admin/categories/add"
               element={
                 <AdminRoute role="admin">
-                  <AdminProducts />
+                  <AddCat />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/categories/:id"
+              element={
+                <AdminRoute role="admin">
+                  <EditCat />
                 </AdminRoute>
               }
             />
@@ -105,7 +119,47 @@ function App() {
               path="/admin/orders"
               element={
                 <AdminRoute role="admin">
-                  <AdminProducts />
+                  <ListOrders />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/orders/add"
+              element={
+                <AdminRoute role="admin">
+                  <AddOrders />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/orders/:id"
+              element={
+                <AdminRoute role="admin">
+                  <EditOrders />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <AdminRoute role="admin">
+                  <ListUsers />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/users/add"
+              element={
+                <AdminRoute role="admin">
+                  <AddUsers />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/users/:id"
+              element={
+                <AdminRoute role="admin">
+                  <EditUsers />
                 </AdminRoute>
               }
             />

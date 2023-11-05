@@ -1,11 +1,11 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Alert, Button, Form } from "react-bootstrap";
 import { useCallback, useEffect, useState } from "react";
-import { SERVER_URL, URLS } from "../../constants";
+import { SERVER_URL, URLS } from "../../../constants";
 
-import { list } from "../../services/category";
+import { list } from "../../../services/category";
 
-import useApi from "../../hooks/useApi";
+import useApi from "../../../hooks/useApi";
 
 export default function EditProduct() {
   const { id } = useParams();
