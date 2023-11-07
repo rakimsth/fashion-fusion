@@ -35,8 +35,6 @@ const EditOrders = () => {
     setOrder(result);
   }, [id, getById]);
 
-  console.log(order);
-
   useEffect(() => {
     fetchDetails();
   }, [fetchDetails]);

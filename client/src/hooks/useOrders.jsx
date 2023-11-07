@@ -49,7 +49,6 @@ export const useOrders = () => {
       const { data } = await API.get(`${URLS.ORDERS}/${id}`);
       setOrder(data.data);
       setMsg("Order Fetched Successfully");
-      console.log(data);
       return data.data;
     } catch (e) {
       const errMsg = e.response
