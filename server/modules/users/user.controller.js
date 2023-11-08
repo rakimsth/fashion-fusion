@@ -5,7 +5,7 @@ const Model = require("./user.model");
 const create = async (payload) => {
   const { password, roles, ...rest } = payload;
   rest.password = await bcrypt.hash(password, +process.env.SALT_ROUND);
-  rest.roles = [roles];
+  if (roles) rest.roles = [roles];
   rest.isEmailVerified = true;
   rest.isActive = true;
   return Model.create(rest);
