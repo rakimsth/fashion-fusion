@@ -42,11 +42,11 @@ export default function Tables({ headers, data, remove, msg, url }) {
             ? data.map((d, idx) => {
                 return (
                   <tr key={idx}>
-                    <td>{idx + 1}</td>
+                    <td width="5%">{idx + 1}</td>
                     <td>{d?.name}</td>
                     <td>{d?.quantity}</td>
                     <td>{d?.price}</td>
-                    <td>
+                    <td width={"10%"}>
                       <div className="flex d-flex justify-content-evenly">
                         <BsFillTrashFill
                           color="red"

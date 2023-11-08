@@ -58,7 +58,7 @@ export default function List() {
       <h1 className="text-center">Categories</h1>
       <div className="d-flex flex-row-reverse mb-2">
         <Link to="/admin/categories/add" className="btn btn-danger">
-          Add new Categories
+          Add New Category
         </Link>
       </div>
       <Table striped bordered hover>

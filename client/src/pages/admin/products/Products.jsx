@@ -25,7 +25,7 @@ function AdminProducts() {
     dispatch(fetchProducts({ limit, page: currentPage }));
   }, [dispatch, currentPage, limit]);
 
-  const headers = ["ID", "Name", "Quantity", "Price"];
+  const headers = ["#", "Name", "Quantity", "Price"];
 
   useEffect(() => {
     initFetch();

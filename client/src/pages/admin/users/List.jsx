@@ -89,7 +89,7 @@ export default function ListUsers() {
       <h1 className="text-center">Users</h1>
       <div className="d-flex flex-row-reverse mb-2">
         <Link to="/admin/users/add" className="btn btn-danger">
-          Add new User
+          Add New User
         </Link>
       </div>
       <Table striped bordered hover>

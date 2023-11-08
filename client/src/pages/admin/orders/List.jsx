@@ -91,7 +91,7 @@ export default function ListOrders() {
       <h1 className="text-center">Orders</h1>
       <div className="d-flex flex-row-reverse mb-2">
         <Link to="/admin/orders/add" className="btn btn-danger">
-          Add new Order
+          Add New Order
         </Link>
       </div>
       <Table striped bordered hover>
