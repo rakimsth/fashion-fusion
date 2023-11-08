@@ -143,7 +143,9 @@ export default function ListUsers() {
             })
           ) : (
             <tr>
-              <td colSpan={4}>No data</td>
+              <td className="text-center" colSpan={7}>
+                No Users
+              </td>
             </tr>
           )}
         </tbody>

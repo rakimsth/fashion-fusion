@@ -96,7 +96,9 @@ export default function List() {
             })
           ) : (
             <tr>
-              <td colSpan={4}>No data</td>
+              <td className="text-center" colSpan={4}>
+                No Categories
+              </td>
             </tr>
           )}
         </tbody>
