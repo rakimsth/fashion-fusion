@@ -33,8 +33,9 @@ export const useOrders = () => {
     try {
       setLoading(true);
       const { data } = await API.post(URLS.ORDERS, payload);
-      setData(data?.data?.data);
+      setData(data?.data);
       setMsg("Orders Added Successfully");
+      return data;
     } catch (e) {
       const errMsg = e.response
         ? e.response.data.msg
