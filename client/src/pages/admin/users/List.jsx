@@ -12,7 +12,7 @@ import { useUsers } from "../../../hooks/useUsers";
 export default function ListUsers() {
   const navigate = useNavigate();
   const { data, list, remove, blockUser } = useUsers();
-  const [limit, setLimit] = useState(4);
+  const [limit, setLimit] = useState(10);
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -44,7 +44,7 @@ export default function ListUsers() {
             text: `${!status ? "Archive" : "Unarchive"} Successful.`,
             icon: "success",
           });
-          list();
+          list({ page: currentPage, limit: limit });
         }
       }
     } catch (e) {
@@ -72,7 +72,7 @@ export default function ListUsers() {
             text: `User has been ${status ? "Block" : "Unblock"}.`,
             icon: "success",
           });
-          list();
+          list({ page: currentPage, limit: limit });
         }
       }
     } catch (e) {
@@ -83,8 +83,6 @@ export default function ListUsers() {
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
-
-  console.log({ data });
 
   return (
     <div>

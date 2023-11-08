@@ -1,18 +1,26 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 import { BsFillTrashFill, BsFillPencilFill } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 import { useCategories } from "../../../hooks/useCategories";
+import Hookpagination from "../../../components/Hookpagination";
 
 export default function List() {
   const navigate = useNavigate();
   const { data, list, remove } = useCategories();
+  const [limit, setLimit] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchCategories = useCallback(async () => {
-    list();
-  }, [list]);
+    const result = await list({ page: currentPage, limit: limit });
+    if (result) {
+      setTotal(result.total);
+      setCurrentPage(result.page);
+    }
+  }, [list, currentPage, limit]);
 
   const handleDelete = async (event, id) => {
     event.preventDefault();
@@ -34,7 +42,7 @@ export default function List() {
             text: "Delete Successful.",
             icon: "success",
           });
-          list();
+          list({ page: currentPage, limit: limit });
         }
       }
     } catch (e) {
@@ -93,6 +101,13 @@ export default function List() {
           )}
         </tbody>
       </Table>
+      <Hookpagination
+        total={total}
+        limit={limit}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        setLimit={setLimit}
+      />
     </div>
   );
 }

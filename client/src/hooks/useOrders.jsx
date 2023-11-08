@@ -10,12 +10,15 @@ export const useOrders = () => {
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const list = useCallback(async () => {
+  const list = useCallback(async ({ page, limit }) => {
     try {
       setLoading(true);
-      const { data } = await API.get(URLS.ORDERS);
+      const { data } = await API.get(
+        `${URLS.ORDERS}?page=${page}&limit=${limit}`
+      );
       setData(data?.data?.data);
       setMsg("Orders fetched Successfully");
+      return data.data;
     } catch (e) {
       const errMsg = e.response
         ? e.response.data.msg
